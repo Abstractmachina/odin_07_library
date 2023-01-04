@@ -17,8 +17,9 @@ class App {
 
         this.app = document.querySelector('#root');
         
-        this.left = document.createElement('div');
-
+        //create sidebar
+        this.sideBar = document.createElement('div');
+        this.sideBar.setAttribute('id', 'sidebar');
 
         this.btn_add = document.createElement('button');
         this.btn_add.setAttribute('id', 'addBook');
@@ -28,7 +29,14 @@ class App {
             this.addBook();
         })
 
-        this.app.append(this.btn_add);
+        this.sideBar.append(this.btn_add);
+        this.app.append(this.sideBar);
+
+        //create main
+        this.mainContainer = document.createElement('div');
+        this.mainContainer.setAttribute('id', 'mainContainer');
+
+        this.app.append(this.mainContainer);
 
 
         //create submission form
@@ -76,10 +84,17 @@ class App {
 
         this.btn_submit = document.createElement('button');
         this.btn_submit.setAttribute('id', 'btn_submit');
-        //this.btn_submit.setAttribute('type', 'submit');
+        this.btn_submit.setAttribute('type', 'submit');
         this.btn_submit.textContent = 'Add';
         this.btn_submit.addEventListener('click', (e) => {
             this.submitBook(e);
+        });
+
+        this.btn_cancel = document.createElement('button');
+        this.btn_cancel.setAttribute('id', 'btn_cancel');
+        this.btn_cancel.textContent = "Cancel";
+        this.btn_cancel.addEventListener('click', (e)=> {
+            this.cancelSubmission(e);
         })
 
         this.submitSet.append(
@@ -88,9 +103,10 @@ class App {
             this.lab_author, this.in_author, 
             this.lab_pages, this.in_pages, 
             this.lab_complete, this.in_complete,
-            this.btn_submit);
+            this.btn_submit, this.btn_cancel);
 
         this.submissionForm.appendChild(this.submitSet);
+        //this.mainContainer.append(this.submissionForm);
         this.app.append(this.submissionForm);
 
     }
@@ -108,6 +124,11 @@ class App {
     submitBook(event) {
         console.log("book submitted.");
         event.preventDefault();
+    }
+    cancelSubmission(event) {
+        event.preventDefault();
+        this.submissionForm.style.top = '100vh';
+
     }
 }
 

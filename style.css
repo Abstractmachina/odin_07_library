@@ -1,3 +1,27 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+body > div {
+    height: 100vh;
+}
+
+#root {
+    display: flex;
+    background-color: aqua;
+}
+
+#sidebar {
+    width: 10%;
+    background-color: bisque;
+}
+#mainContainer {
+    flex-grow: 1;
+}
+
 #submission {
     position: fixed;
     top:400px;
