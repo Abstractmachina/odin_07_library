@@ -1,10 +1,12 @@
-function Book(title, author, totalPages, isCompleted) {
+function Book(title, author, pages, isCompleted) {
     this.title = title;
     this.author = author;
-    this.totalPages = totalPages;
+    this.pages = pages;
     this.isCompleted = isCompleted;
     this.info = function() {
-        return this.title + " by " + this.author + ", " + this.totalPages + 'pages, ' + (isCompleted)? "read" : "not read yet";
+        let result = title + " by " + author + ", " + pages + ' pages, ';
+        result += (isCompleted)? "read" : "not read yet"
+        return  result;
     }
 }
 
@@ -71,7 +73,10 @@ class App {
         this.lab_pages.textContent = 'Pages'
         this.in_pages = document.createElement('input');
         this.in_pages.setAttribute('id', 'in_pages');
-        this.in_pages.setAttribute('type', 'text');
+        this.in_pages.setAttribute('type', 'number');
+        this.in_pages.setAttribute('min', '1');
+        this.in_pages.setAttribute('max', '999999');
+        this.in_pages.setAttribute('step', '1');
         this.in_pages.setAttribute('name', 'pages');
         //this.in_pages.setAttribute('pattern' ,"[\d]+");
 
@@ -110,6 +115,12 @@ class App {
         //this.mainContainer.append(this.submissionForm);
         this.app.append(this.submissionForm);
 
+
+        //dummy books
+        this.addBookToLibrary(new Book('Neuromancer', "William Gibson", 1298, false ));
+        this.addBookToLibrary(new Book('The Kite Runner', "Khaled Hosseini", 456, false ));
+        this.addBookToLibrary(new Book('Javascript for Impatient Programmers', "Dr Axel Rauschmayer", 265, true ));
+
     }
 
     callSubmissionForm() {
@@ -119,14 +130,10 @@ class App {
     
 
     processSubmission(event) {
-        console.log("book submitted.");
         event.preventDefault();
 
         let fd = new FormData(this.submissionForm);
-        console.log(fd);
-        console.log(fd.get('title'));
         const book = new Book(fd.get('title'), fd.get('author'), fd.get('pages'), (fd.get('complete')==='on')?true:false);
-        console.log(book);
         this.addBookToLibrary(book);
     }
 
@@ -137,37 +144,48 @@ class App {
     }
 
     addBookToLibrary(book){
+        this.createBookCard(book);
+        this.myLibrary.push(book);
+        //update ui
+    }
+    
+
+    deleteBookFromLibrary(id) {
+        let cards = this.cardContainer.children;
+
+        const c = document.querySelector('#' + id);
+
+        this.cardContainer.removeChild(c);
+    }
+
+    createBookCard(book) {
+        const id = this.generateId(book);
 
         let card = document.createElement('div');
         card.classList.add('card');
-        card.setAttribute('id', this.generateId(book));
-        let title = document.createElement('p');
-        title.textContent = 'Title: ' + book.title;
+        card.setAttribute('id', id);
+        let title = document.createElement('h2');
+        title.textContent = book.title;
         
         let author = document.createElement('p');
         author.textContent = 'Author: ' + book.author;
 
-        let totalPages = document.createElement('p');
-        totalPages.textContent = 'Number of Pages: ' + book.pages;
+        let pages = document.createElement('p');
+        pages.textContent = 'Number of Pages: ' + book.pages.toString();
 
         let isCompleted = document.createElement('p');
         isCompleted.textContent = 'Read: ' + book.isCompleted;
 
-        card.append(title, author, totalPages, isCompleted);
+        let btn_del = document.createElement('button');
+        btn_del.textContent = 'X';
+        btn_del.setAttribute('id', 'btn_' + id);
+
+        btn_del.addEventListener('click', () => {
+            this.deleteBookFromLibrary(id);
+        });
+
+        card.append(title, author, pages, isCompleted, btn_del);
         this.cardContainer.append(card);
-
-        this.myLibrary.push(book);
-        //update ui
-        
-    }
-    
-
-    deleteBookFromLibrary() {
-        let cards = this.cardContainer.children;
-    }
-
-    createBookCard(book) {
-
     }
 
     generateId(book) {

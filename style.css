@@ -23,6 +23,7 @@ body {
 }
 #mainContainer {
     flex-grow: 1;
+    padding: 2em;
 }
 
 #submission {
@@ -45,12 +46,36 @@ body {
     border-style: none;
 }
 
+#cardContainer {
+    padding: 2em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
 .card {
-    width: 100px;
-    height: 150px;
+    width: 16em;
+    height: 26em;
     background-color: blueviolet;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     border-radius: 1em;
 
+}
+
+.card h2 {
+    margin: 0;
+    background-color: brown;
+    padding: 1em 1em;
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+}
+.card p {
+    font-size: 1em;
+    padding:0.1em 1em ;
+}
+
+.card button {
+    padding: 1em;
 }
