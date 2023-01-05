@@ -79,7 +79,6 @@ class App {
         this.in_pages.setAttribute('max', '999999');
         this.in_pages.setAttribute('step', '1');
         this.in_pages.setAttribute('name', 'pages');
-        //this.in_pages.setAttribute('pattern' ,"[\d]+");
 
         this.lab_complete = document.createElement('label');
         this.lab_complete.setAttribute('for', 'in_conplete');
@@ -128,16 +127,12 @@ class App {
         this.submissionForm.style.top = '100px';        
     }
 
-    
-
     processSubmission(event) {
         event.preventDefault();
 
         let fd = new FormData(this.submissionForm);
         const book = new Book(fd.get('title'), fd.get('author'), fd.get('pages'), (fd.get('complete')==='on')?true:false);
         this.addBookToLibrary(book);
-
-        
     }
 
     cancelSubmission(event) {
@@ -149,11 +144,11 @@ class App {
     addBookToLibrary(book){
         this.createBookCard(book);
         this.myLibrary.push(book);
-        //update ui
     }
     
 
     deleteBookFromLibrary(id) {
+        //delete from model
         for(let i = 0; i < this.myLibrary.length; i++) {
             const compareId = this.generateId(this.myLibrary[i]);
             if (compareId === id) {
@@ -161,13 +156,14 @@ class App {
                 break;
             }
         }
+        //delete from view
         const c = document.querySelector('#' + id);
         this.cardContainer.removeChild(c);
     }
 
     toggleCompletion(id, book) {
-        const c = document.querySelector('#' + id);
-
+        
+        //toggle in model
         let index;
         for (let i = 0; i < this.myLibrary.length;i++) {
             if (this.myLibrary[i].title === book.title && this.myLibrary[i].author === book.author) {
@@ -177,11 +173,15 @@ class App {
         }
         if (this.myLibrary[index].isCompleted)this.myLibrary[index].isCompleted = false;
         else this.myLibrary[index].isCompleted = true;
+    
+        //toggle in view
+        const c = document.querySelector('#' + id);
         let p = c.querySelector('.completionStatus');
         p.textContent = 'Read: ' + this.myLibrary[index].isCompleted;
     }
 
     createBookCard(book) {
+        
         const id = this.generateId(book);
 
         let card = document.createElement('div');
@@ -219,6 +219,7 @@ class App {
         this.cardContainer.append(card);
     }
 
+    //generate id from title and author
     generateId(book) {
         return book.author.split(" ").join("") + '_' + book.title.split(" ").join("");
     }
