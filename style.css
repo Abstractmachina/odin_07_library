@@ -24,9 +24,9 @@ body > div {
 
 #submission {
     position: fixed;
-    top:400px;
+    top:100vh;
 }
 
-.show {
-    top: 100px;
+.card {
+    
 }

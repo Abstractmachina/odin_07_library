@@ -1,14 +1,8 @@
-
-
-function Book(title) {
+function Book(title, author, totalPages, isCompleted) {
     this.title = title;
     this.author = author;
-    this.totalPages = -1;
-    this.isCompleted = false;
-}
-
-function addBookToLibrary() {
-
+    this.totalPages = totalPages;
+    this.isCompleted = isCompleted;
 }
 
 class App {
@@ -22,11 +16,11 @@ class App {
         this.sideBar.setAttribute('id', 'sidebar');
 
         this.btn_add = document.createElement('button');
-        this.btn_add.setAttribute('id', 'addBook');
+        this.btn_add.setAttribute('id', 'callSubmissionForm');
         this.btn_add.textContent = "Add Book";
         
         this.btn_add.addEventListener('click', () => {
-            this.addBook();
+            this.callSubmissionForm();
         })
 
         this.sideBar.append(this.btn_add);
@@ -56,7 +50,7 @@ class App {
         this.in_title = document.createElement('input');
         this.in_title.setAttribute('id', 'in_title');
         this.in_title.setAttribute('type', 'text');
-        this.in_title.setAttribute('name', 'in_title');
+        this.in_title.setAttribute('name', 'title');
 
         this.lab_author = document.createElement('label');
         this.lab_author.setAttribute('for', 'in_author');
@@ -64,15 +58,15 @@ class App {
         this.in_author = document.createElement('input');
         this.in_author.setAttribute('id', 'in_author');
         this.in_author.setAttribute('type', 'text');
-        this.in_author.setAttribute('name', 'in_author');
+        this.in_author.setAttribute('name', 'author');
 
         this.lab_pages = document.createElement('label');
         this.lab_pages.setAttribute('for', 'in_pages');
         this.lab_pages.textContent = 'Pages'
         this.in_pages = document.createElement('input');
         this.in_pages.setAttribute('id', 'in_pages');
-        this.in_pages.setAttribute('type', 'text');
-        this.in_pages.setAttribute('name', 'in_pages');
+        this.in_pages.setAttribute('type', 'number');
+        this.in_pages.setAttribute('name', 'pages');
 
         this.lab_complete = document.createElement('label');
         this.lab_complete.setAttribute('for', 'in_conplete');
@@ -80,14 +74,14 @@ class App {
         this.in_complete = document.createElement('input');
         this.in_complete.setAttribute('id', 'in_complete');
         this.in_complete.setAttribute('type', 'checkbox');
-        this.in_complete.setAttribute('name', 'in_complete');
+        this.in_complete.setAttribute('name', 'complete');
 
         this.btn_submit = document.createElement('button');
         this.btn_submit.setAttribute('id', 'btn_submit');
         this.btn_submit.setAttribute('type', 'submit');
         this.btn_submit.textContent = 'Add';
         this.btn_submit.addEventListener('click', (e) => {
-            this.submitBook(e);
+            this.processSubmission(e);
         });
 
         this.btn_cancel = document.createElement('button');
@@ -111,23 +105,42 @@ class App {
 
     }
 
-    addBook() {
-        //this.submissionForm.classList.add('show');
+    callSubmissionForm() {
         this.submissionForm.style.top = '100px';
 
     }
 
-    deleteBook() {
+    
 
-    }
-
-    submitBook(event) {
+    processSubmission(event) {
         console.log("book submitted.");
         event.preventDefault();
+
+        let fd = new FormData(this.submissionForm);
+        console.log(formData);
+
+        const book = new Book(fd.title, fd.author, fd.pages, fd.complete);
+
+        this.addBookToLibrary(book);
+        this.myLibrary.push(book);
+
     }
+
+    
+
+
     cancelSubmission(event) {
         event.preventDefault();
         this.submissionForm.style.top = '100vh';
+
+    }
+
+    addBookToLibrary(book){
+        this.myLibrary.push(book);
+        //update ui
+    }
+
+    deleteBookFromLibrary() {
 
     }
 }
