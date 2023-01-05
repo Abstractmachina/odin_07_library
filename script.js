@@ -3,6 +3,9 @@ function Book(title, author, totalPages, isCompleted) {
     this.author = author;
     this.totalPages = totalPages;
     this.isCompleted = isCompleted;
+    this.info = function() {
+        return this.title + " by " + this.author + ", " + this.totalPages + 'pages, ' + (isCompleted)? "read" : "not read yet";
+    }
 }
 
 class App {
@@ -29,6 +32,9 @@ class App {
         //create main
         this.mainContainer = document.createElement('div');
         this.mainContainer.setAttribute('id', 'mainContainer');
+        this.cardContainer = document.createElement('div');
+        this.cardContainer.setAttribute('id', 'cardContainer');
+        this.mainContainer.append(this.cardContainer);
 
         this.app.append(this.mainContainer);
 
@@ -65,8 +71,9 @@ class App {
         this.lab_pages.textContent = 'Pages'
         this.in_pages = document.createElement('input');
         this.in_pages.setAttribute('id', 'in_pages');
-        this.in_pages.setAttribute('type', 'number');
+        this.in_pages.setAttribute('type', 'text');
         this.in_pages.setAttribute('name', 'pages');
+        //this.in_pages.setAttribute('pattern' ,"[\d]+");
 
         this.lab_complete = document.createElement('label');
         this.lab_complete.setAttribute('for', 'in_conplete');
@@ -106,8 +113,7 @@ class App {
     }
 
     callSubmissionForm() {
-        this.submissionForm.style.top = '100px';
-
+        this.submissionForm.style.top = '100px';        
     }
 
     
@@ -117,17 +123,12 @@ class App {
         event.preventDefault();
 
         let fd = new FormData(this.submissionForm);
-        console.log(formData);
-
-        const book = new Book(fd.title, fd.author, fd.pages, fd.complete);
-
+        console.log(fd);
+        console.log(fd.get('title'));
+        const book = new Book(fd.get('title'), fd.get('author'), fd.get('pages'), (fd.get('complete')==='on')?true:false);
+        console.log(book);
         this.addBookToLibrary(book);
-        this.myLibrary.push(book);
-
     }
-
-    
-
 
     cancelSubmission(event) {
         event.preventDefault();
@@ -136,13 +137,43 @@ class App {
     }
 
     addBookToLibrary(book){
+
+        let card = document.createElement('div');
+        card.classList.add('card');
+        card.setAttribute('id', this.generateId(book));
+        let title = document.createElement('p');
+        title.textContent = 'Title: ' + book.title;
+        
+        let author = document.createElement('p');
+        author.textContent = 'Author: ' + book.author;
+
+        let totalPages = document.createElement('p');
+        totalPages.textContent = 'Number of Pages: ' + book.pages;
+
+        let isCompleted = document.createElement('p');
+        isCompleted.textContent = 'Read: ' + book.isCompleted;
+
+        card.append(title, author, totalPages, isCompleted);
+        this.cardContainer.append(card);
+
         this.myLibrary.push(book);
         //update ui
+        
     }
+    
 
     deleteBookFromLibrary() {
+        let cards = this.cardContainer.children;
+    }
+
+    createBookCard(book) {
 
     }
+
+    generateId(book) {
+        return book.author.split(" ").join("") + '_' + book.title.split(" ").join("");
+    }
+
 }
 
 
