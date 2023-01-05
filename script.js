@@ -1,11 +1,12 @@
-function Book(title, author, pages, isCompleted) {
+function Book(title, author, pages, isCompleted,) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.isCompleted = isCompleted;
+
     this.info = function() {
         let result = title + " by " + author + ", " + pages + ' pages, ';
-        result += (isCompleted)? "read" : "not read yet"
+        result += (this.isCompleted)? "read" : "not read yet"
         return  result;
     }
 }
@@ -135,6 +136,8 @@ class App {
         let fd = new FormData(this.submissionForm);
         const book = new Book(fd.get('title'), fd.get('author'), fd.get('pages'), (fd.get('complete')==='on')?true:false);
         this.addBookToLibrary(book);
+
+        
     }
 
     cancelSubmission(event) {
@@ -151,11 +154,31 @@ class App {
     
 
     deleteBookFromLibrary(id) {
-        let cards = this.cardContainer.children;
+        for(let i = 0; i < this.myLibrary.length; i++) {
+            const compareId = this.generateId(this.myLibrary[i]);
+            if (compareId === id) {
+                delete this.myLibrary[i];
+                break;
+            }
+        }
+        const c = document.querySelector('#' + id);
+        this.cardContainer.removeChild(c);
+    }
 
+    toggleCompletion(id, book) {
         const c = document.querySelector('#' + id);
 
-        this.cardContainer.removeChild(c);
+        let index;
+        for (let i = 0; i < this.myLibrary.length;i++) {
+            if (this.myLibrary[i].title === book.title && this.myLibrary[i].author === book.author) {
+                index = i;
+                break;
+            }
+        }
+        if (this.myLibrary[index].isCompleted)this.myLibrary[index].isCompleted = false;
+        else this.myLibrary[index].isCompleted = true;
+        let p = c.querySelector('.completionStatus');
+        p.textContent = 'Read: ' + this.myLibrary[index].isCompleted;
     }
 
     createBookCard(book) {
@@ -174,17 +197,25 @@ class App {
         pages.textContent = 'Number of Pages: ' + book.pages.toString();
 
         let isCompleted = document.createElement('p');
+        isCompleted.classList.add('completionStatus');
         isCompleted.textContent = 'Read: ' + book.isCompleted;
+
+        let btn_read = document.createElement('button');
+        btn_read.textContent = 'Read';
+        btn_read.setAttribute('id', 'btn_read_' + id);
+        btn_read.addEventListener('click', () => {
+            this.toggleCompletion(id, book);
+        })
 
         let btn_del = document.createElement('button');
         btn_del.textContent = 'X';
-        btn_del.setAttribute('id', 'btn_' + id);
+        btn_del.setAttribute('id', 'btn_del_' + id);
 
         btn_del.addEventListener('click', () => {
             this.deleteBookFromLibrary(id);
         });
 
-        card.append(title, author, pages, isCompleted, btn_del);
+        card.append(title, author, pages, isCompleted, btn_read, btn_del);
         this.cardContainer.append(card);
     }
 
